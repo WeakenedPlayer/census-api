@@ -59,7 +59,7 @@ export class RestJoinBuilder {
         let query: string = '';
         if( inner instanceof Array ) {
             inner.map( i => {
-                query = query + ( query ? ',' : '' ) + i.query;
+                query = query + ( query ? '\'' : '' ) + i.query;
             } );
         } else {
             query = inner.query;
