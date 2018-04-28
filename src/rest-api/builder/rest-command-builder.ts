@@ -7,7 +7,7 @@ export class RestCommandBuilder {
         return
     }
     private append( command: string, param: string ): RestCommandBuilder {
-        this.command = this.command + ( this.command ? ',' : '' ) + 'c:' + command + '=' + param;
+        this.command = this.command + ( this.command ? '&' : '' ) + 'c:' + command + '=' + param;
         return this;
     }
     
