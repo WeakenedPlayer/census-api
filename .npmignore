@@ -1,4 +1,2 @@
-src
-tsconfig.*
-webpack.*
+node_modules
 tmp

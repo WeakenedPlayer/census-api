@@ -1,14 +1,14 @@
 {
 	"scope": "@weakenedplayer",
   	"name": "@weakenedplayer/census-api",
-	"version": "0.0.0-beta.2",
+	"version": "0.0.0-beta.8",
 	"description": "DBG Census API: REST & Event Stream",
 	"repository": "https://github.com/WeakenedPlayer/census-api",
 	"license": "MIT",
  	"main": "dist/index.js",
  	 "scripts": {
- 	   "build": "tsc",
-  	  "postinstall": "postinstall-build dist"
+ 	 	"build": "tsc -p tsconfig.json",
+  	  	"postinstall": "postinstall-build dist"
 	},
  	 "dependencies": {
   	 	"postinstall-build": "^3.0.0"
