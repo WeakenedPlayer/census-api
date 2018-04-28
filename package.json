@@ -1,10 +1,13 @@
 {
-  	"name": "census-api",
-	"version": "0.0.0-beta.0.0",
-  	"private": false,
+	"scope": "@weakenedplayer",
+  	"name": "@weakenedplayer/census-api",
+	"version": "0.0.0-beta.1",
+	"description": "DBG Census API: REST & Event Stream",
+	"repository": "https://github.com/WeakenedPlayer/census-api",
+	"license": "MIT",
  	"main": "dist/index.js",
  	 "scripts": {
- 	   "build": "tsc -p tsconfig.json",
+ 	   "build": "tsc -p ./tsconfig.json",
   	  "postinstall": "postinstall-build dist"
 	},
  	 "dependencies": {
@@ -12,5 +15,8 @@
   	},
   	"devDependencies": {
   	 	"es6-error": "^4.1.1"
+    },
+    "buildDependencies": {
+		"typescript": "*"
     }
 }
