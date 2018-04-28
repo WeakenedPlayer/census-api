@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 export interface IRestApiHttp {
-    get( url: string ): Promise<any>;
+    get( url: string ): Observable<any>;
 }

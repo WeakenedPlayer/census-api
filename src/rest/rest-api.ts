@@ -28,7 +28,7 @@ export class RestApi {
         this.baseUrl = BASE_URL +  serviceId;
     }
     
-    private request( method: string, query: RestApiQuery ): Promise<any> {
+    private request( method: string, query: RestApiQuery ): Observable<any> {
         let queryString: string;
     
         if( !query ) {
@@ -44,11 +44,11 @@ export class RestApi {
         return this.http.get( url );
     }
     
-    get( query: RestApiQuery ): Promise<any> {
+    get( query: RestApiQuery ): Observable<any> {
         return this.request( 'get', query );
     }
 
-    count( query: RestApiQuery ): Promise<any> {
+    count( query: RestApiQuery ): Observable<any> {
         return this.request( 'count', query );
     }
 }
