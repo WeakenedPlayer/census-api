@@ -1,27 +1,14 @@
 {
   "name": "census-api",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.0.0-beta.0.0",
+  "private": false,
   "scripts": {
-    "node-build": "webpack --config webpack.node.config.js",
-    "web-build": "webpack --config webpack.web.config.js",
-    "build": "npm run node-build && npm run web-build"
+    "build": "tsc",
+    "postinstall": "postinstall-build dist"
   },
-  "main": "dist/node/index.ts",
-  "browser": {
-    "./dist/node/index.ts": "./dist/web/index.ts"
-  },
+  "main": "src/index.ts",
   "dependencies": {
-    "es6-error": "^4.1.1",
-    "websocket": "^1.0.25"
+    "es6-error": "^4.1.1"
   },
-  "devDependencies": {
-    "@types/node": "~6.0.60",
-    "ts-loader": "^4.1.0",
-    "typescript": "~2.5.3",
-    "webpack": "^4.2.0",
-    "webpack-cli": "^2.0.13",
-    "webpack-merge": "^4.1.2",
-    "webpack-node-externals": "^1.7.2"
-  }
+  "devDependencies": {}
 }
