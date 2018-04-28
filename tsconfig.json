@@ -3,11 +3,10 @@
   	"compilerOptions": {
 	    "outDir": "dist",
 	    "sourceMap": true,
-	    "declaration": false,
+	    "declaration": true,
 	    "moduleResolution": "node",
 	    "emitDecoratorMetadata": true,
 	    "experimentalDecorators": true,
-	    "allowJs": true,
 	    "target": "es5",
 	    "typeRoots": [
 	      "node_modules/@types"

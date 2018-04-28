@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { Response, Event, IWebsocket } from './types';
+import { EventResponse, EventType, IEventStreamWebsocket } from './types';
 import { EventFilter } from './event-filter';
 
 export class EventStream {
@@ -11,32 +11,32 @@ export class EventStream {
     private _connectionStateChanged$: Observable<boolean>;
     private _serviceStateChanged$: Observable<boolean>;
     private _heartbeat$: Observable<any>;
-    private subscription$: Observable<Response.Subscription>;
+    private subscription$: Observable<EventResponse.Subscription>;
 
     //-------------------------------------------------------------------------
     // _serviceMessage より派生 ペイロードを返す
     //-------------------------------------------------------------------------
     private _event$: Observable<any>;
-    private recentCharacterIds$: Observable<Response.RecentCharacterIds>;
+    private recentCharacterIds$: Observable<EventResponse.RecentCharacterIds>;
 
     //-------------------------------------------------------------------------
     // _event より派生
     //-------------------------------------------------------------------------
-    private _achievementEarned$: Observable<Event.AchievementEarned>;
-    private _battleRankUp$: Observable<Event.BattleRankUp>;
-    private _death$: Observable<Event.Death>;
-    private _itemAdded$: Observable<Event.ItemAdded>;
-    private _skillAdded$: Observable<Event.SkillAdded>;
-    private _vehicleDestroy$: Observable<Event.VehicleDestroy>;
-    private _gainExperience$: Observable<Event.GainExperience>;
-    private _playerFacilityCapture$: Observable<Event.PlayerFacilityCapture>;
-    private _playerFacilityDefend$: Observable<Event.PlayerFacilityDefend>;
-    private _continentLock$: Observable<Event.ContinentLock>;
-    private _continentUnlock$: Observable<Event.ContinentUnlock>;
-    private _facilityControl$: Observable<Event.FacilityControl>;
-    private _metagameEvent$: Observable<Event.MetagameEvent>;
-    private _playerLogin$: Observable<Event.PlayerLogin>;
-    private _playerLogout$: Observable<Event.PlayerLogout>;
+    private _achievementEarned$: Observable<EventType.AchievementEarned>;
+    private _battleRankUp$: Observable<EventType.BattleRankUp>;
+    private _death$: Observable<EventType.Death>;
+    private _itemAdded$: Observable<EventType.ItemAdded>;
+    private _skillAdded$: Observable<EventType.SkillAdded>;
+    private _vehicleDestroy$: Observable<EventType.VehicleDestroy>;
+    private _gainExperience$: Observable<EventType.GainExperience>;
+    private _playerFacilityCapture$: Observable<EventType.PlayerFacilityCapture>;
+    private _playerFacilityDefend$: Observable<EventType.PlayerFacilityDefend>;
+    private _continentLock$: Observable<EventType.ContinentLock>;
+    private _continentUnlock$: Observable<EventType.ContinentUnlock>;
+    private _facilityControl$: Observable<EventType.FacilityControl>;
+    private _metagameEvent$: Observable<EventType.MetagameEvent>;
+    private _playerLogin$: Observable<EventType.PlayerLogin>;
+    private _playerLogout$: Observable<EventType.PlayerLogout>;
 
     //-------------------------------------------------------------------------
     //  Getter
@@ -47,24 +47,24 @@ export class EventStream {
     get heartbeat$(): Observable<any> { return this._heartbeat$ }
     
     get event$(): Observable<any> { return this._event$ }
-    get achievementEarned$(): Observable<Event.AchievementEarned> { return this._achievementEarned$ }
-    get battleRankUp$(): Observable<Event.BattleRankUp> { return this._battleRankUp$ }
-    get death$(): Observable<Event.Death> { return this._death$ }
-    get itemAdded$(): Observable<Event.ItemAdded> { return this._itemAdded$ }
-    get skillAdded$(): Observable<Event.SkillAdded> { return this._skillAdded$ }
-    get vehicleDestroy$(): Observable<Event.VehicleDestroy> { return this._vehicleDestroy$ }
-    get gainExperience$(): Observable<Event.GainExperience> { return this._gainExperience$ }
-    get playerFacilityCapture$(): Observable<Event.PlayerFacilityCapture> { return this._playerFacilityCapture$ }
-    get playerFacilityDefend$(): Observable<Event.PlayerFacilityDefend> { return this._playerFacilityDefend$ }
-    get continentLock$(): Observable<Event.ContinentLock> { return this._continentLock$ }
-    get continentUnlock$(): Observable<Event.ContinentUnlock> { return this._continentUnlock$ }
-    get facilityControl$(): Observable<Event.FacilityControl> { return this._facilityControl$ }
-    get metagameEvent$(): Observable<Event.MetagameEvent> { return this._metagameEvent$ }
-    get playerLogin$(): Observable<Event.PlayerLogin> { return this._playerLogin$ }
-    get playerLogout$(): Observable<Event.PlayerLogout> { return this._playerLogout$ }
+    get achievementEarned$(): Observable<EventType.AchievementEarned> { return this._achievementEarned$ }
+    get battleRankUp$(): Observable<EventType.BattleRankUp> { return this._battleRankUp$ }
+    get death$(): Observable<EventType.Death> { return this._death$ }
+    get itemAdded$(): Observable<EventType.ItemAdded> { return this._itemAdded$ }
+    get skillAdded$(): Observable<EventType.SkillAdded> { return this._skillAdded$ }
+    get vehicleDestroy$(): Observable<EventType.VehicleDestroy> { return this._vehicleDestroy$ }
+    get gainExperience$(): Observable<EventType.GainExperience> { return this._gainExperience$ }
+    get playerFacilityCapture$(): Observable<EventType.PlayerFacilityCapture> { return this._playerFacilityCapture$ }
+    get playerFacilityDefend$(): Observable<EventType.PlayerFacilityDefend> { return this._playerFacilityDefend$ }
+    get continentLock$(): Observable<EventType.ContinentLock> { return this._continentLock$ }
+    get continentUnlock$(): Observable<EventType.ContinentUnlock> { return this._continentUnlock$ }
+    get facilityControl$(): Observable<EventType.FacilityControl> { return this._facilityControl$ }
+    get metagameEvent$(): Observable<EventType.MetagameEvent> { return this._metagameEvent$ }
+    get playerLogin$(): Observable<EventType.PlayerLogin> { return this._playerLogin$ }
+    get playerLogout$(): Observable<EventType.PlayerLogout> { return this._playerLogout$ }
 
 
-    constructor( private ws: IWebsocket ) {
+    constructor( private ws: IEventStreamWebsocket ) {
         //---------------------------------------------------------------------
         // connectable に変換する (複数のsubscriberが存在するため) 
         //---------------------------------------------------------------------
@@ -149,7 +149,7 @@ export class EventStream {
     private sendSubscribeCommand( action: string, events: string[], filter: EventFilter, logicalAnd: boolean = false ): void {
         this.sendCommand( action, {
             'eventNames': events,
-            'characters': filter.characters,
+            'characters': filter.characterIds,
             'worlds': filter.worlds,
             'logicalAndCharactersWithWorlds': ( logicalAnd ? 'true' : 'false' )
         } );
@@ -158,7 +158,7 @@ export class EventStream {
     //-------------------------------------------------------------------------
     // subscriptionの応答を待つ
     //-------------------------------------------------------------------------
-    private waitForSubscribe(): Promise<Response.Subscription> {
+    private waitForSubscribe(): Promise<EventResponse.Subscription> {
         return this.subscription$
         .take( 1 )
         .toPromise();
@@ -167,7 +167,7 @@ export class EventStream {
     //-------------------------------------------------------------------------
     // 通知対象のイベントを追加する
     //-------------------------------------------------------------------------
-    addEvent( events: string[], filter: EventFilter, logicalAnd: boolean = false ): Promise<Response.Subscription> {
+    addEvent( events: string[], filter: EventFilter, logicalAnd: boolean = false ): Promise<EventResponse.Subscription> {
         this.sendSubscribeCommand( 'subscribe', events, filter, logicalAnd );
         return this.waitForSubscribe(); 
     }
@@ -175,7 +175,7 @@ export class EventStream {
     //-------------------------------------------------------------------------
     // イベントを通知対象から除外する
     //-------------------------------------------------------------------------
-    removeEvent( events: string[], filter: EventFilter, logicalAnd: boolean = false ): Promise<Response.Subscription> {
+    removeEvent( events: string[], filter: EventFilter, logicalAnd: boolean = false ): Promise<EventResponse.Subscription> {
         this.sendSubscribeCommand( 'clearSubscribe', events, filter, logicalAnd );
         return this.waitForSubscribe(); 
     }
@@ -183,7 +183,7 @@ export class EventStream {
     //-------------------------------------------------------------------------
     // イベントの通知を停止する
     //-------------------------------------------------------------------------
-    removeAllEvent(): Promise<Response.Subscription> {
+    removeAllEvent(): Promise<EventResponse.Subscription> {
         this.sendCommand( 'clearSubscribe', { 'all': 'true' } );
         return this.waitForSubscribe(); 
     }
@@ -191,7 +191,7 @@ export class EventStream {
     //-------------------------------------------------------------------------
     // recentCharacterIds* の応答を待つ
     //-------------------------------------------------------------------------
-    private waitRecentCharacterIds(): Promise<Response.RecentCharacterIds> {
+    private waitRecentCharacterIds(): Promise<EventResponse.RecentCharacterIds> {
         return this.recentCharacterIds$
         .take( 1 )
         .toPromise();
@@ -200,7 +200,7 @@ export class EventStream {
     //-------------------------------------------------------------------------
     // ログイン中のユーザ数とIDリストを取得する
     //-------------------------------------------------------------------------
-    getRecentCharacterIds(): Promise<Response.RecentCharacterIds> {
+    getRecentCharacterIds(): Promise<EventResponse.RecentCharacterIds> {
         this.sendCommand( 'recentCharacterIds' );
         return this.waitRecentCharacterIds();
     }
@@ -208,7 +208,7 @@ export class EventStream {
     //-------------------------------------------------------------------------
     // ログイン中のユーザ数を取得する
     //-------------------------------------------------------------------------
-    getRecentCharacterIdsCount(): Promise<Response.RecentCharacterIds> {
+    getRecentCharacterIdsCount(): Promise<EventResponse.RecentCharacterIds> {
         this.sendCommand( 'recentCharacterIdsCount' );
         return this.waitRecentCharacterIds();
     }

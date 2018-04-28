@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 //-----------------------------------------------------------------------------
 // Census API Websocket abstraction
 //-----------------------------------------------------------------------------
-export interface IWebsocket {
+export interface IEventStreamWebsocket {
     message$: Observable<any>;
     send( data: any ): void;
 }
@@ -12,7 +12,7 @@ export interface IWebsocket {
 // Event payload
 // type definition from http://census.daybreakgames.com/
 //-----------------------------------------------------------------------------
-export module Event {
+export module EventType {
     export interface AchievementEarned {
         event_name: string,
         character_id: string,
@@ -186,7 +186,7 @@ export module Event {
 //-----------------------------------------------------------------------------
 // Response from Census API
 //-----------------------------------------------------------------------------
-export module Response {
+export module EventResponse {
     export interface RecentCharacterIds {
         recent_character_id_count: string;
         recent_character_id_list?: string[]; 

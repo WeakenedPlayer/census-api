@@ -1,16 +1,7 @@
 export class EventFilter {
-    constructor( public readonly characters: string[] = [],
+    static filterByWorld( worlds: string[] ): EventFilter { return new EventFilter( [], worlds ) }
+    static filterByCharacter( characterIds: string[] ): EventFilter { return new EventFilter( characterIds, [] ) }
+
+    constructor( public readonly characterIds: string[] = [],
                  public readonly worlds: string[] = [] ) {}
-}
-
-export class WorldFilter extends EventFilter {
-    constructor( worlds: string[] ) {
-        super( [], worlds );
-    }
-}
-
-export class CharacterFilter extends EventFilter {
-    constructor( characters: string[] ) {
-        super( characters, [] );
-    }
 }

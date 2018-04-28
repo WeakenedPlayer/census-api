@@ -1,4 +1,4 @@
-export module Constant {
+export module EventConstant {
     export const AchievementEarned = 'AchievementEarned';
     export const BattleRankUp = 'BattleRankUp';
     export const Death = 'Death';
@@ -29,14 +29,10 @@ export module Constant {
         'all': 'all'
     };
     
-    export function toWorldNames( names: string[] ): string[] {
+    export function convertWorldName2Id( names: string[] ): string[] {
         let ids: string[] = [];
-        let id: string;
         for( let name of names ) {
-            id = WorldId[ name ];
-            if( id ) {
-                ids.push( id );
-            }
+            ids.push( WorldId[ name ] || null );
         }
         return ids;
     }

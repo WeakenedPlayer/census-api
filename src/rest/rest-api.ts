@@ -1,17 +1,13 @@
 import { Observable, Subscriber } from 'rxjs';
-
 import { QueryBuilder } from './query-builder';
 import { CommandBuilder } from './command-builder';
+import { IRestApiHttp } from './types';
 
 const DEFAULT_ENVIRONMENT = 'ps2:v2';
 const DEFAULT_SERVICEID = 'example';
 const BASE_URL = 'http://census.daybreakgames.com/s:';
 
-export interface IHttp {
-    get( url: string ): Promise<any>;
-}
-
-export class CensusRestApiQuery {
+export class RestApiQuery {
     private _body = new QueryBuilder();
     private _command = new CommandBuilder();
 
@@ -28,11 +24,11 @@ export class CensusRestApiQuery {
 
 export class RestApi {
     private baseUrl: string;
-    constructor( private http: IHttp, serviceId: string = DEFAULT_SERVICEID, private environment = DEFAULT_ENVIRONMENT ) {
+    constructor( private http: IRestApiHttp, serviceId: string = DEFAULT_SERVICEID, private environment = DEFAULT_ENVIRONMENT ) {
         this.baseUrl = BASE_URL +  serviceId;
     }
     
-    private request( method: string, query: CensusRestApiQuery ): Promise<any> {
+    private request( method: string, query: RestApiQuery ): Promise<any> {
         let queryString: string;
     
         if( !query ) {
@@ -48,11 +44,11 @@ export class RestApi {
         return this.http.get( url );
     }
     
-    get( query: CensusRestApiQuery ): Promise<any> {
+    get( query: RestApiQuery ): Promise<any> {
         return this.request( 'get', query );
     }
 
-    count( query: CensusRestApiQuery ): Promise<any> {
+    count( query: RestApiQuery ): Promise<any> {
         return this.request( 'count', query );
     }
 }
