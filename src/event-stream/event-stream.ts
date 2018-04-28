@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { EventResponse, EventType, IEventStreamWebsocket } from './types';
+import { EventResponse, EventType, EventStreamWebsocket } from './types';
 import { EventFilter } from './event-filter';
 
 export class EventStream {
@@ -64,7 +64,7 @@ export class EventStream {
     get playerLogout$(): Observable<EventType.PlayerLogout> { return this._playerLogout$ }
 
 
-    constructor( private ws: IEventStreamWebsocket ) {
+    constructor( private ws: EventStreamWebsocket ) {
         //---------------------------------------------------------------------
         // connectable に変換する (複数のsubscriberが存在するため) 
         //---------------------------------------------------------------------

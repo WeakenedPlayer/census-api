@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 //-----------------------------------------------------------------------------
 // Census API Websocket abstraction
 //-----------------------------------------------------------------------------
-export interface IEventStreamWebsocket {
+export interface EventStreamWebsocket {
     message$: Observable<any>;
     send( data: any ): void;
 }
