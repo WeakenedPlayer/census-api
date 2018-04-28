@@ -1,19 +1,19 @@
-export class JoinBuilder {
+export class RestJoinBuilder {
     private query: string = '';
     constructor( private collection: string ){
         this.query = collection;
     }
 
-    private append( key: string, value: string ): JoinBuilder {
+    private append( key: string, value: string ): RestJoinBuilder {
         this.query = this.query + '^' + key + ':' + value;
         return this;
     }
     
-    private appendList( key: string, fields: string[] ): JoinBuilder {
+    private appendList( key: string, fields: string[] ): RestJoinBuilder {
         return this.append( key, fields.join('\''));
     }
     
-    private appendBoolean( key: string, value: boolean ): JoinBuilder {
+    private appendBoolean( key: string, value: boolean ): RestJoinBuilder {
         return this.append( key, ( value ? '1' : '0' ) );
     }
     
@@ -25,37 +25,37 @@ export class JoinBuilder {
         return this.query;
     }
     
-    on( field: string ): JoinBuilder {
+    on( field: string ): RestJoinBuilder {
         return this.append( 'on', field );
     }
     
-    to( field: string ): JoinBuilder {
+    to( field: string ): RestJoinBuilder {
         return this.append( 'to', field );
     }
     
-    list( isList: boolean ): JoinBuilder {
+    list( isList: boolean ): RestJoinBuilder {
         return this.appendBoolean( 'list', isList );
     }
     
-    show( fields: string[] ): JoinBuilder {
+    show( fields: string[] ): RestJoinBuilder {
         return this.appendList( 'show', fields );
     }
     
-    hide( fields: string[] ): JoinBuilder {
+    hide( fields: string[] ): RestJoinBuilder {
         return this.appendList( 'hide', fields );
     }
     
-    injectAt( fieldName: string ): JoinBuilder {
+    injectAt( fieldName: string ): RestJoinBuilder {
         return this.append( 'inject_at', fieldName );
     }
     
     // terms() is not implemented
 
-    outer( isOuterJoin: boolean ): JoinBuilder {
+    outer( isOuterJoin: boolean ): RestJoinBuilder {
         return this.appendBoolean( 'outer', isOuterJoin );
     }
 
-    nest( inner: JoinBuilder | JoinBuilder[] ): JoinBuilder {
+    nest( inner: RestJoinBuilder | RestJoinBuilder[] ): RestJoinBuilder {
         let query: string = '';
         if( inner instanceof Array ) {
             inner.map( i => {
