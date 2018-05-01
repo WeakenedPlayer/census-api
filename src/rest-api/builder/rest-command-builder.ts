@@ -36,7 +36,7 @@ export class RestCommandBuilder {
     limit( value: number ): RestCommandBuilder                    { return this.append( 'limit', String( value ) ) }
     limitPerDB( value: number ): RestCommandBuilder               { return this.append( 'limitPerDB', String( value ) ) }
     join( jb: RestJoinBuilder | RestJoinBuilder[] ): RestCommandBuilder {
-        let query: string = 'c:join=';
+        let query: string = '';
         if( jb instanceof Array ) {
             let tmp: string = '';
             jb.map( j => {
@@ -46,6 +46,7 @@ export class RestCommandBuilder {
         } else {
             query = query + jb.toString();
         }
+        this.append( 'join', query );
         return this;
     }
 }
