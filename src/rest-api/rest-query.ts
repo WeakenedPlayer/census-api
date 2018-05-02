@@ -1,41 +1,92 @@
-import { RestTermBuilder, RestCommandBuilder, RestJoinBuilder } from './builder';
-import * as format from 'string-format';
-
-export { RestJoinBuilder };
+import { RestTerm } from './rest-term';
+import { RestJoin } from './rest-join';
 
 export class RestQuery {
-    private _term: RestTermBuilder;
-    private _command: RestCommandBuilder;
+    private terms: { [ field: string ]: RestTerm } = {};
+    private commands: { [command:string]: string } = {};
+    private joins: { [id: string]: RestJoin } = {};
 
-    get term(): RestTermBuilder {
-        return this._term;
-    }
-    
-    get command(): RestCommandBuilder {
-        return this._command;
+    constructor( private _collection: string ) {}
+
+    // ------------------------------------------------------------------------
+    // accessor
+    // ------------------------------------------------------------------------
+    toString(): string {
+        let tmp: string[] = [];
+        for( let field in this.terms ) {
+            tmp.push( this.terms[ field ].toString() );
+        }
+        
+        for( let cmd in this.commands ) {
+            tmp.push( this.commands[ cmd ] );
+        }
+        
+        for( let id in this.joins ) {
+            tmp.push( this.joins[ id ].toString() );
+        }
+        
+        let query = this._collection + '/?' + tmp.join( '&' );
+        return query;
     }
     
     get collection(): string {
         return this._collection;
     }
-
-    constructor( private _collection: string, term?: RestTermBuilder, command?: RestCommandBuilder ) {
-        this._term = ( term ? term.clone() : new RestTermBuilder() );
-        this._command = ( command ? command.clone() : new RestCommandBuilder() );
+    
+    // ------------------------------------------------------------------------
+    // term
+    // ------------------------------------------------------------------------
+    where( field: string, configure: ( term: RestTerm ) => void ): RestQuery {
+        let term = new RestTerm( field );
+        configure( term );
+        this.terms[ field ] = term;
+        return this;
     }
     
-    clear(): void {
-        this._term.clear();
-        this._command.clear();
-    }
-    
-    toString( param ?: any ): string {
-        let body = [ this._term.toString(), this._command.toString() ].join('&');
-        let queryString = this._collection + ( body ? '/?' + body : '/' );
-
-        if( param ) {
-            queryString = format( queryString, param );
+    // ------------------------------------------------------------------------
+    // join
+    // ------------------------------------------------------------------------
+    join( id: string, collection: string, configure: ( join: RestJoin ) => void ): RestQuery {
+        if( !id || !collection ) {
+            throw new Error( 'JoinId and/or Collection are not specified.' );
         }
-        return queryString;
+        let join = new RestJoin( collection );
+        configure( join );
+        this.joins[ id ] = join;
+        return this;
     }
+    
+    removeJoin( id: string ): void {
+        if( this.joins[ id ] ) {
+            delete this.joins[ id ];
+        }
+    }
+    
+    removeAllJoins(): void {
+        this.joins = {};
+    }
+    
+    // ------------------------------------------------------------------------
+    // command
+    // ------------------------------------------------------------------------
+    private register( command: string, param: string ): RestQuery {
+        this.commands[ command ] = 'c:' + command + '=' + param;
+        return this;
+    }
+    
+    private registerList( command: string, list: string[], suffix: string = '' ): RestQuery {
+        return this.register( command, list.join(',') + suffix );
+    }
+    
+    private registerBoolean( command: string, value: boolean ): RestQuery {
+        return this.register( command, value ? 'true' : 'false' );
+    }
+    
+    show( fields: string[] ): RestQuery                  { return this.registerList( 'show', fields ) }
+    hide( fields: string[] ): RestQuery                  { return this.registerList( 'hide', fields ) }
+    sort( fields: string[], accending: true ): RestQuery { return this.registerList( 'sort', fields, ( accending ? ':1' : ':-1' ) ) }
+    has( field: string ): RestQuery                      { return this.register( 'has', field ) }
+    case( value: boolean ): RestQuery                    { return this.registerBoolean( 'case', value ) }
+    limit( value: number ): RestQuery                    { return this.register( 'limit', String( value ) ) }
+    limitPerDB( value: number ): RestQuery               { return this.register( 'limitPerDB', String( value ) ) }
 }

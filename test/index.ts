@@ -1,6 +1,6 @@
 import { Census } from '../dist';
 import { Observable } from 'rxjs';
-import * as request from 'request'; // test only 
+import * as request from 'request';
 
 class errorHttp implements Census.RestApiHttp {
     get( url: string ): Observable<any> {
@@ -24,15 +24,20 @@ class nodeHttp implements Census.RestApiHttp {
     }
 }
 
-let query = new Census.RestQuery( 'character' );
-query.term.equals( 'character_id', '{id}' );
-query.command.join( [ 
-    new Census.RestJoinBuilder( 'outfit_member_extended' ),
-    new Census.RestJoinBuilder( 'characters_world' ).nest( new Census.RestJoinBuilder('world') )
-] );
 
-let api = new Census.RestApi( new errorHttp() );
-api.get( query, { id: '5428139972582787329' } )
+let query: Census.RestQuery = new Census.RestQuery( 'character' );
+query
+.where( 'name.first_lower', t => {
+    t.contains( 'abc' );
+    t.contains( '123' );
+} )
+.limit( 10 )
+.join( 'outfit_join', 'outfit_member_extended', ( join ) => {} );
+
+console.log( query.toString() );
+
+let api = new Census.RestApi( new nodeHttp() );
+api.get( query )
 .catch( err => {
     console.error( '-------------------------------------------' );
     console.error( err );
@@ -42,6 +47,5 @@ api.get( query, { id: '5428139972582787329' } )
 .do( res => {
     console.log( res );
 } )
-
 .subscribe();
 

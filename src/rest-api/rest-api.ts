@@ -12,25 +12,22 @@ export class RestApi {
         this.baseUrl = BASE_URL + serviceId;
     }
     
-    private request(  method: string, query: RestQuery, param: any ): Observable<any[]> {
-        if( !param ) {
-            param = {};
-        }
-        let url = [ this.baseUrl,  method, this.environment, query.toString( param ) ].join('/');
+    private request(  method: string, query: RestQuery ): Observable<any[]> {
+        let url = [ this.baseUrl,  method, this.environment, query.toString() ].join('/');
         return this.http.get( url ).map( res => {
-            if( res[ 'error' ] ) {
-                // census api return error
-                throw new Error( res[ 'error' ] );
+            let err: string = res[ 'error' ] || res[ 'errorMessage' ];
+            if( err ) {
+                throw new Error( err );
             }
             return res[ query.collection + '_list' ];
         } )
     }
     
-    get( query: RestQuery, param?: any ): Observable<any[]> {
-        return this.request( 'get', query, param );
+    get( query: RestQuery ): Observable<any[]> {
+        return this.request( 'get', query );
     }
 
-    count( query: RestQuery, param?: any ): Observable<any[]> {
-        return this.request( 'count', query, param );
+    count( query: RestQuery ): Observable<any[]> {
+        return this.request( 'count', query );
     }
 }
