@@ -28,13 +28,17 @@ class nodeHttp implements Census.RestApiHttp {
 let query: Census.RestQuery = new Census.RestQuery( 'character' );
 query
 .where( 'name.first_lower', t => {
-    t.contains( 'party' );
-    t.contains( 'one' );
+    t.contains( 'partyofo' );
 } )
-.limit( 10 )
-.join( 'outfit_join', 'outfit_member_extended', ( join ) => {
-    join.injectAt( 'outfit' );
+.limit( 3 )
+.join( 'world', 'characters_world', join => {
+    join.nest( 'world_join', 'world', ( join ) => {
+    } );
+} )
+.join( 'outfit', 'outfit_member_extended', ( join ) => {
+    join.show( ['name' ] );
 } );
+
 
 console.log( query.toString() );
 

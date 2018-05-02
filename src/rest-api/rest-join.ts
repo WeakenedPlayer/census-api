@@ -5,22 +5,26 @@ export class RestJoin {
     constructor( private collection: string ) {}
     
     toString(): string {
-        let query = 'c:join=' + this.collection;
+        let query = 'c:join=' + this._toString();
+        return query;
+    }
+    
+    private _toString(): string {
+        let query = this.collection;
         for( let key in this.commands ) {
             query = query + '^' + this.commands[ key ];
         }
-        
-        if( this.children.length ) {
-            let joins = '';
-            for( let id in this.children ) {
-                joins = joins + ( joins ? '^' : '' ) + this.children[ id ].toString();
-            }
-            query = query + '(' + joins + ')';
-        }
 
+        let joins = '';
+        for( let id in this.children ) {
+            joins = joins + ( joins ? '^' : '' ) + this.children[ id ]._toString();
+        }
+        if( joins ) {
+            query = query + '(' + joins + ')';            
+        }
         return query;
     }
-
+    
     private register( key: string, value: string ): RestJoin {
         this.commands[ key ] = ( key + ':' + value );
         return this;
