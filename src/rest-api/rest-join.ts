@@ -1,5 +1,5 @@
 export class RestJoin {
-    private children: RestJoin[] = [];
+    private children: { [id: string]: RestJoin } = {};
     private commands: { [ key: string ]: string } = {};
 
     constructor( private collection: string ) {}
@@ -11,12 +11,11 @@ export class RestJoin {
         }
         
         if( this.children.length ) {
-            console.log( this.children )
             let joins = '';
-            this.children.map( join => {
-                joins = joins + ( joins ? '^' : '' ) + join.toString();
-            } )            
-            query = query + '(' + joins + ')';        
+            for( let id in this.children ) {
+                joins = joins + ( joins ? '^' : '' ) + this.children[ id ].toString();
+            }
+            query = query + '(' + joins + ')';
         }
 
         return query;
@@ -63,9 +62,10 @@ export class RestJoin {
         return this.registerBoolean( 'outer', isOuterJoin );
     }
 
-    nest( collection: string, configure: ( child: RestJoin ) => void ): RestJoin {
+    nest( id: string, collection: string, configure: ( child: RestJoin ) => void ): RestJoin {
         let join = new RestJoin( collection );
         configure( join );
+        this.children[ id ] = join;
         return this;
     }
 }
