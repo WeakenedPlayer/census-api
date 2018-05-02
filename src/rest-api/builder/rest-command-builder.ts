@@ -45,7 +45,7 @@ export class RestCommandBuilder {
         let query: string = '';
         if( jb instanceof Array ) {
             let tmp: string = '';
-            jb.map( j => {console.log(j)
+            jb.map( j => {
                 tmp = tmp + ( tmp ? ',' : '' ) + j.toString();
             } );
             query = query + tmp;

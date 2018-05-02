@@ -1,5 +1,3 @@
-import * as format from 'string-format';
-
 export class RestTermBuilder {
     private term: string = '';
     private append( field: string, modifier: string, value: string ): RestTermBuilder {

@@ -14,8 +14,12 @@ export class RestQuery {
     get command(): RestCommandBuilder {
         return this._command;
     }
+    
+    get collection(): string {
+        return this._collection;
+    }
 
-    constructor( private collection: string, term?: RestTermBuilder, command?: RestCommandBuilder ) {
+    constructor( private _collection: string, term?: RestTermBuilder, command?: RestCommandBuilder ) {
         this._term = ( term ? term.clone() : new RestTermBuilder() );
         this._command = ( command ? command.clone() : new RestCommandBuilder() );
     }
@@ -27,7 +31,7 @@ export class RestQuery {
     
     toString( param ?: any ): string {
         let body = [ this._term.toString(), this._command.toString() ].join('&');
-        let queryString = this.collection + ( body ? '/?' + body : '/' );
+        let queryString = this._collection + ( body ? '/?' + body : '/' );
 
         if( param ) {
             queryString = format( queryString, param );
