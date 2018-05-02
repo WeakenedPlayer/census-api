@@ -90,3 +90,4 @@ export class RestQuery {
     limit( value: number ): RestQuery                    { return this.register( 'limit', String( value ) ) }
     limitPerDB( value: number ): RestQuery               { return this.register( 'limitPerDB', String( value ) ) }
 }
+
