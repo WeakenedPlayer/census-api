@@ -18,6 +18,12 @@ export class RestCommandBuilder {
     private appendBoolean( command: string, value: boolean ): RestCommandBuilder {
         return this.append( command, value ? 'true' : 'false' );
     }
+    
+    clone(): RestCommandBuilder {
+        let tmp = new RestCommandBuilder();
+        tmp.command = this.command;
+        return tmp;
+    }
 
     clear(): void {
         this.command = '';
@@ -39,7 +45,7 @@ export class RestCommandBuilder {
         let query: string = '';
         if( jb instanceof Array ) {
             let tmp: string = '';
-            jb.map( j => {
+            jb.map( j => {console.log(j)
                 tmp = tmp + ( tmp ? ',' : '' ) + j.toString();
             } );
             query = query + tmp;

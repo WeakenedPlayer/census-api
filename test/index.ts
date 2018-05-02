@@ -1,9 +1,10 @@
 import { Census } from '../dist';
 
-// tiny test
+let query = new Census.RestQuery( 'character' );
+query.term.equals( 'character_id', '{id}' );
+query.command.join( [ 
+    new Census.RestJoinBuilder( 'outfit_member_extended' ),
+    new Census.RestJoinBuilder( 'characters_world' ).nest( new Census.RestJoinBuilder('world') )
+] );
 
-let query = new Census.RestQueryBuilder().equals( 'character_id', '5428176321548975265' )
-let join = new Census.RestJoinBuilder( 'outfit' ).on( 'character_id' );
-let command = new Census.RestCommandBuilder().join( join );
-let collection = 'character';
-console.log( command.toString() );
+console.log( query.toString( { id: '5428257774260271201' } ) );

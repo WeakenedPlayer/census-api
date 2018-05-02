@@ -1,5 +1,5 @@
 import { Observable, Subscriber } from 'rxjs';
-import { RestQueryBuilder, RestCommandBuilder } from './builder';
+import { RestQuery } from './rest-query';
 import { RestApiHttp } from './types';
 
 const DEFAULT_ENVIRONMENT = 'ps2:v2';
@@ -12,18 +12,16 @@ export class RestApi {
         this.baseUrl = BASE_URL +  serviceId;
     }
     
-    private request(  method: string, collection: string,query: RestQueryBuilder, command: RestCommandBuilder ): Observable<any> {
-        let body = [ query.toString(), command.toString() ].join('&');
-        let queryString = collection + ( body ? '?' + body : '' );
-        let url = [ this.baseUrl,  method, this.environment, queryString ].join('/');
+    private request(  method: string, query: string ): Observable<any> {
+        let url = [ this.baseUrl,  method, this.environment, query ].join('/');
         return this.http.get( url );
     }
     
-    get( collection: string, query: RestQueryBuilder, command: RestCommandBuilder ): Observable<any> {
-        return this.request( 'get', collection, query, command );
+    get( query: string ): Observable<any> {
+        return this.request( 'get', query );
     }
 
-    count( collection: string, query: RestQueryBuilder, command: RestCommandBuilder ): Observable<any> {
-        return this.request( 'count', collection, query, command );
+    count( query: string ): Observable<any> {
+        return this.request( 'count', query );
     }
 }

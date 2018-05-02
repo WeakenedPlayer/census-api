@@ -16,6 +16,12 @@ export class RestJoinBuilder {
     private appendBoolean( key: string, value: boolean ): RestJoinBuilder {
         return this.append( key, ( value ? '1' : '0' ) );
     }
+
+    clone(): RestJoinBuilder {
+        let tmp = new RestJoinBuilder( this.collection );
+        tmp.query = this.query;
+        return tmp;
+    }
     
     clear(): void {
         this.query = this.collection;
@@ -64,7 +70,7 @@ export class RestJoinBuilder {
         } else {
             query = inner.query;
         }
-        this.query = '(' + query + ')';
+        this.query = this.query + '(' + query + ')';
         return this;
     }
 }
