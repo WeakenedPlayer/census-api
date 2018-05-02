@@ -7,4 +7,4 @@ query.command.join( [
     new Census.RestJoinBuilder( 'characters_world' ).nest( new Census.RestJoinBuilder('world') )
 ] );
 
-console.log( query.toString( { id: '5428257774260271201' } ) );
+console.log( query.toString( { id: '5428139972582787329' } ) );
