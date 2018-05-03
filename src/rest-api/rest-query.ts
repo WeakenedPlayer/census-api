@@ -36,7 +36,7 @@ export class RestQuery {
     // ------------------------------------------------------------------------
     // term
     // ------------------------------------------------------------------------
-    where( field: string, configure: ( term: RestTerm ) => void ): RestQuery {
+    where( field: string, configure?: ( term: RestTerm ) => void ): RestQuery {
         let term = new RestTerm( field );
         configure( term );
         this.terms[ field ] = term;
@@ -46,12 +46,16 @@ export class RestQuery {
     // ------------------------------------------------------------------------
     // join
     // ------------------------------------------------------------------------
-    join( id: string, collection: string, configure: ( join: RestJoin ) => void ): RestQuery {
+    join( id: string, collection: string, configure?: ( join: RestJoin ) => void ): RestQuery {
         if( !id || !collection ) {
             throw new Error( 'JoinId and/or Collection are not specified.' );
         }
-        let join = new RestJoin( collection );
-        configure( join );
+
+        let join = new RestJoin( collection );        
+        if( configure ) {
+            configure( join );            
+        }
+        
         this.joins[ id ] = join;
         return this;
     }

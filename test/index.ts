@@ -24,21 +24,19 @@ class nodeHttp implements Census.RestApiHttp {
     }
 }
 
-
 let query: Census.RestQuery = new Census.RestQuery( 'character' );
 query
 .where( 'name.first_lower', t => {
     t.contains( 'partyofo' );
 } )
 .limit( 3 )
-.join( 'world', 'characters_world', join => {
-    join.nest( 'world_join', 'world', ( join ) => {
-    } );
+.join( 'w', 'characters_world', join => {
+    join.nest( 'wj', 'world' );
 } )
-.join( 'outfit', 'outfit_member_extended', ( join ) => {
-    join.show( ['name' ] );
-} );
-
+.join( 'o', 'outfit_member_extended', ( join ) => {
+    join.show( [ 'name', 'alias' ] );
+} )
+.join( 'f', 'faction' );
 
 console.log( query.toString() );
 
@@ -48,10 +46,12 @@ api.get( query )
     console.error( '-------------------------------------------' );
     console.error( err );
     console.error( '-------------------------------------------' );
-    return Observable.never();
+    return Observable.of( [] );
 } )
 .do( res => {
-    console.log( res );
+    for( let item of res ) {
+        console.log( item );
+    }
 } )
 .subscribe();
 

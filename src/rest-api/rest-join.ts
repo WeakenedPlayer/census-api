@@ -66,9 +66,11 @@ export class RestJoin {
         return this.registerBoolean( 'outer', isOuterJoin );
     }
 
-    nest( id: string, collection: string, configure: ( child: RestJoin ) => void ): RestJoin {
+    nest( id: string, collection: string, configure?: ( child: RestJoin ) => void ): RestJoin {
         let join = new RestJoin( collection );
-        configure( join );
+        if( configure ) {
+            configure( join );            
+        }
         this.children[ id ] = join;
         return this;
     }
