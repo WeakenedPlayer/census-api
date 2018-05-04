@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { map, publish, refCount, take, filter } from 'rxjs/operators';
 import { EventResponse, EventType, EventStreamWebsocket } from './types';
 import { EventFilter } from './event-filter';
 
@@ -68,49 +69,49 @@ export class EventStream {
         //---------------------------------------------------------------------
         // connectable に変換する (複数のsubscriberが存在するため) 
         //---------------------------------------------------------------------
-        this.message$ = this.ws.message$.publish().refCount();
+        this.message$ = this.ws.message$.pipe( publish(), refCount() );
 
         //-------------------------------------------------------------------------
         // _message より派生
         //-------------------------------------------------------------------------
-        this._serviceMessage$ = this.typeFilter( 'serviceMessage' ).publish().refCount();
-        this._connectionStateChanged$ = this.typeFilter( 'connectionStateChanged' ).publish().refCount();
-        this._serviceStateChanged$ = this.typeFilter( 'serviceStateChanged' ).publish().refCount();
-        this._heartbeat$ = this.typeFilter( 'heartbeat' ).publish().refCount();
-        this.subscription$ = this.message$.filter( msg => msg[ 'subscription' ] );
+        this._serviceMessage$ = this.typeFilter( 'serviceMessage' ).pipe( publish(), refCount() );
+        this._connectionStateChanged$ = this.typeFilter( 'connectionStateChanged' ).pipe( publish(), refCount() );
+        this._serviceStateChanged$ = this.typeFilter( 'serviceStateChanged' ).pipe( publish(), refCount() );
+        this._heartbeat$ = this.typeFilter( 'heartbeat' ).pipe( publish(), refCount() );
+        this.subscription$ = this.message$.pipe( filter( msg => msg[ 'subscription' ] ) );
         //---------------------------------------------------------------------
         
         //---------------------------------------------------------------------
         // event系のメッセージ( payloadにevent_nameを持つことが条件 )
         //---------------------------------------------------------------------
-        this._event$ = this.filterServiceMessage( 'event_name' ).publish().refCount();
-        this.recentCharacterIds$ = this.filterServiceMessage( 'recent_character_id_count' ).publish().refCount();
+        this._event$ = this.filterServiceMessage( 'event_name' ).pipe( publish(), refCount() );
+        this.recentCharacterIds$ = this.filterServiceMessage( 'recent_character_id_count' ).pipe( publish(), refCount() );
 
         //---------------------------------------------------------------------
         // 個別のイベント
         //---------------------------------------------------------------------
-        this._achievementEarned$ = this.filterEvent( 'AchievementEarned' ).publish().refCount();
-        this._battleRankUp$ = this.filterEvent( 'BattleRankUp' ).publish().refCount();
-        this._death$ = this.filterEvent( 'Death' ).publish().refCount();
-        this._itemAdded$ = this.filterEvent( 'ItemAdded' ).publish().refCount();
-        this._skillAdded$ = this.filterEvent( 'SkillAdded' ).publish().refCount();
-        this._vehicleDestroy$ = this.filterEvent( 'VehicleDestroy' ).publish().refCount();
-        this._gainExperience$ = this.filterEvent( 'GainExperience' ).publish().refCount();
-        this._playerFacilityCapture$ = this.filterEvent( 'PlayerFacilityCapture' ).publish().refCount();
-        this._playerFacilityDefend$ = this.filterEvent( 'PlayerFacilityDefend' ).publish().refCount();
-        this._continentLock$ = this.filterEvent( 'ContinentLock' ).publish().refCount();
-        this._continentUnlock$ = this.filterEvent( 'ContinentUnlock' ).publish().refCount();
-        this._facilityControl$ = this.filterEvent( 'FacilityControl' ).publish().refCount();
-        this._metagameEvent$ = this.filterEvent( 'MetagameEvent' ).publish().refCount();
-        this._playerLogin$ = this.filterEvent( 'PlayerLogin' ).publish().refCount();
-        this._playerLogout$ = this.filterEvent( 'PlayerLogout' ).publish().refCount();
+        this._achievementEarned$ = this.filterEvent( 'AchievementEarned' ).pipe( publish(), refCount() );
+        this._battleRankUp$ = this.filterEvent( 'BattleRankUp' ).pipe( publish(), refCount() );
+        this._death$ = this.filterEvent( 'Death' ).pipe( publish(), refCount() );
+        this._itemAdded$ = this.filterEvent( 'ItemAdded' ).pipe( publish(), refCount() );
+        this._skillAdded$ = this.filterEvent( 'SkillAdded' ).pipe( publish(), refCount() );
+        this._vehicleDestroy$ = this.filterEvent( 'VehicleDestroy' ).pipe( publish(), refCount() );
+        this._gainExperience$ = this.filterEvent( 'GainExperience' ).pipe( publish(), refCount() );
+        this._playerFacilityCapture$ = this.filterEvent( 'PlayerFacilityCapture' ).pipe( publish(), refCount() );
+        this._playerFacilityDefend$ = this.filterEvent( 'PlayerFacilityDefend' ).pipe( publish(), refCount() );
+        this._continentLock$ = this.filterEvent( 'ContinentLock' ).pipe( publish(), refCount() );
+        this._continentUnlock$ = this.filterEvent( 'ContinentUnlock' ).pipe( publish(), refCount() );
+        this._facilityControl$ = this.filterEvent( 'FacilityControl' ).pipe( publish(), refCount() );
+        this._metagameEvent$ = this.filterEvent( 'MetagameEvent' ).pipe( publish(), refCount() );
+        this._playerLogin$ = this.filterEvent( 'PlayerLogin' ).pipe( publish(), refCount() );
+        this._playerLogout$ = this.filterEvent( 'PlayerLogout' ).pipe( publish(), refCount() );
     }
     //-------------------------------------------------------------------------
     // _message を type で分類する
     //-------------------------------------------------------------------------
     private typeFilter( typeName: string ): Observable<any> {
         return this.message$
-        .filter( msg => msg[ 'type' ] && msg[ 'type' ] === typeName );
+        .pipe( filter( msg => msg[ 'type' ] && msg[ 'type' ] === typeName ) );
     }
 
     //-------------------------------------------------------------------------
@@ -119,8 +120,8 @@ export class EventStream {
     //-------------------------------------------------------------------------
     private filterServiceMessage( memberName: string ): Observable<any> {
         return this._serviceMessage$
-        .map( msg => msg.payload )
-        .filter( payload => payload[ memberName ] )
+        .pipe( map( msg => msg.payload ),
+               filter( payload => payload[ memberName ] ) );
     }
     
     //-------------------------------------------------------------------------
@@ -128,7 +129,7 @@ export class EventStream {
     //-------------------------------------------------------------------------
     private filterEvent( eventName: string ): Observable<any> {
         return this._event$
-        .filter( payload => payload[ 'event_name' ] === eventName );
+        .pipe( filter( payload => payload[ 'event_name' ] === eventName ) );
     }
 
     //-------------------------------------------------------------------------
@@ -160,7 +161,7 @@ export class EventStream {
     //-------------------------------------------------------------------------
     private waitForSubscribe(): Promise<EventResponse.Subscription> {
         return this.subscription$
-        .take( 1 )
+        .pipe( take( 1 ) )
         .toPromise();
     }
 
@@ -193,7 +194,7 @@ export class EventStream {
     //-------------------------------------------------------------------------
     private waitRecentCharacterIds(): Promise<EventResponse.RecentCharacterIds> {
         return this.recentCharacterIds$
-        .take( 1 )
+        .pipe( take( 1 ) )
         .toPromise();
     }
 

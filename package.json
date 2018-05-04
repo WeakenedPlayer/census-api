@@ -1,7 +1,7 @@
 {
 	"scope": "@weakenedplayer",
 	"name": "@weakenedplayer/census-api",
-	"version": "0.0.3-beta.2",
+	"version": "0.0.4",
 	"description": "DBG Census API: REST & Event Stream for browser&node.js",
 	"keywords": [ "Census API", "Daybreak", "REST", "Event Stream" ],
 	"repository": "https://github.com/WeakenedPlayer/census-api",
@@ -19,7 +19,7 @@
 		"es6-error": "^4.1.1",
 		"postinstall-build": "^3.0.0",
 		"request": "^2.85.0",
-		"rxjs": "^5.5.6",
+		"rxjs": "^6.0.0",
 		"string-format": "^1.0.0"
 	},
 	"devDependencies": {},
