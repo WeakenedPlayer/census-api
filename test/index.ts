@@ -47,8 +47,10 @@ outfit
 .join( 'character', ( join ) =>{
     join.on( 'leader_character_id' );
     join.to( 'character_id' );
-    join.nest( 'faction', 'faction' );
-    join.nest( 'world', 'characters_world' );
+    join.nest( 'faction' );
+    join.nest( 'characters_world', ( join ) => {
+        join.nest( 'world' );
+    } );
 
 });
 
