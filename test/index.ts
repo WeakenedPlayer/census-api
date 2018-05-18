@@ -25,24 +25,37 @@ class nodeHttp implements Census.RestApiHttp {
     }
 }
 
-let query: Census.RestQuery = new Census.RestQuery( 'character' );
-query
-.where( 'name.first_lower', t => {
-    t.contains( 'partyofo' );
-} )
-.limit( 3 )
-.join( 'w', 'characters_world', join => {
-    join.nest( 'wj', 'world' );
-} )
-.join( 'o', 'outfit_member_extended', ( join ) => {
-    join.show( [ 'name', 'alias' ] );
-} )
-.join( 'f', 'faction' );
+//let query: Census.RestQuery = new Census.RestQuery( 'character' );
+//query
+//.where( 'name.first_lower', t => {
+//    t.contains( 'partyofo' );
+//} )
+//.limit( 3 )
+//.join( 'w', 'characters_world', join => {
+//    join.nest( 'wj', 'world' );
+//} )
+//.join( 'o', 'outfit_member_extended', ( join ) => {
+//    join.show( [ 'name', 'alias' ] );
+//} )
+//.join( 'f', 'faction' );
 
-console.log( query.toString() );
+let outfit: Census.RestQuery = new Census.RestQuery( 'outfit' );
+outfit
+.where( 'outfit_id', t => {
+    t.contains( '37512998641471064' );
+} )
+.join( 'character', ( join ) =>{
+    join.on( 'leader_character_id' );
+    join.to( 'character_id' );
+    join.nest( 'faction', 'faction' );
+    join.nest( 'world', 'characters_world' );
+
+});
+
+console.log( outfit.toString() );
 
 let api = new Census.RestApi( new nodeHttp() );
-api.get( query )
+api.get( outfit )
 .pipe( tap( res => {
         console.log( res );
 } ) )

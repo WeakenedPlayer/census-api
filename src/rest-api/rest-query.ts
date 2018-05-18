@@ -4,7 +4,7 @@ import { RestJoin } from './rest-join';
 export class RestQuery {
     private terms: { [ field: string ]: RestTerm } = {};
     private commands: { [command:string]: string } = {};
-    private joins: { [id: string]: RestJoin } = {};
+    private joins: RestJoin[] = [];
 
     constructor( private _collection: string ) {}
 
@@ -21,8 +21,8 @@ export class RestQuery {
             tmp.push( this.commands[ cmd ] );
         }
         
-        for( let id in this.joins ) {
-            tmp.push( this.joins[ id ].toString() );
+        for( let join of this.joins ) {
+            tmp.push( join.toString() );
         }
         
         let query = this._collection + '/?' + tmp.join( '&' );
@@ -46,28 +46,22 @@ export class RestQuery {
     // ------------------------------------------------------------------------
     // join
     // ------------------------------------------------------------------------
-    join( id: string, collection: string, configure?: ( join: RestJoin ) => void ): RestQuery {
-        if( !id || !collection ) {
-            throw new Error( 'JoinId and/or Collection are not specified.' );
+    join( collection: string, configure?: ( join: RestJoin ) => void ): RestQuery {
+        if( !collection ) {
+            throw new Error( 'Collection is not specified.' );
         }
 
         let join = new RestJoin( collection );        
         if( configure ) {
-            configure( join );            
+            configure( join );
         }
         
-        this.joins[ id ] = join;
+        this.joins.push( join );
         return this;
     }
     
-    removeJoin( id: string ): void {
-        if( this.joins[ id ] ) {
-            delete this.joins[ id ];
-        }
-    }
-    
     removeAllJoins(): void {
-        this.joins = {};
+        this.joins = [];
     }
     
     // ------------------------------------------------------------------------
