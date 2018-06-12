@@ -25,20 +25,6 @@ class nodeHttp implements Census.RestApiHttp {
     }
 }
 
-//let query: Census.RestQuery = new Census.RestQuery( 'character' );
-//query
-//.where( 'name.first_lower', t => {
-//    t.contains( 'partyofo' );
-//} )
-//.limit( 3 )
-//.join( 'w', 'characters_world', join => {
-//    join.nest( 'wj', 'world' );
-//} )
-//.join( 'o', 'outfit_member_extended', ( join ) => {
-//    join.show( [ 'name', 'alias' ] );
-//} )
-//.join( 'f', 'faction' );
-
 let outfit: Census.RestQuery = new Census.RestQuery( 'outfit' );
 outfit
 .where( 'outfit_id', t => {
@@ -51,7 +37,6 @@ outfit
     join.nest( 'characters_world', ( join ) => {
         join.nest( 'world' );
     } );
-
 });
 
 console.log( outfit.toString() );
@@ -59,7 +44,7 @@ console.log( outfit.toString() );
 let api = new Census.RestApi( new nodeHttp() );
 api.get( outfit )
 .pipe( tap( res => {
-        console.log( res );
+    console.log( res );
 } ) )
 .subscribe();
 

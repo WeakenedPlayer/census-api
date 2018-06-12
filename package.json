@@ -1,7 +1,7 @@
 {
 	"scope": "@weakenedplayer",
 	"name": "@weakenedplayer/census-api",
-	"version": "0.1.3",
+	"version": "0.1.4",
 	"description": "DBG Census API: REST & Event Stream for browser&node.js",
 	"keywords": [
 		"Census API",
@@ -21,15 +21,12 @@
 		"release": "npm publish --tag latest --access public"
 	},
 	"dependencies": {
-		"es6-error": "^4.1.1",
-		"postinstall-build": "^3.0.0",
-		"request": "^2.85.0",
-		"rxjs": "^6.1.0",
-		"string-format": "^1.0.0"
+		"postinstall-build": "^5.0.1",
+		"request": "^2.87.0",
+		"rxjs": "^6.2.0"
 	},
 	"devDependencies": {},
 	"buildDependencies": {
-		"typescript": "*",
-		"request": "*"
+		"typescript": "*"
 	}
 }
