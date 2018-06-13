@@ -136,6 +136,9 @@ export class EventStream {
     // コマンドを送信する
     //-------------------------------------------------------------------------
     private sendCommand( action: string, options?: any ): void {
+        if( !this.ws.isConnected ) {            
+            throw new Error( 'EventStreamWebsocket is not connected.' );
+        }
         let command = {
                 'service': 'event',
                 'action': action,
@@ -164,7 +167,17 @@ export class EventStream {
         .pipe( take( 1 ) )
         .toPromise();
     }
-
+    //-------------------------------------------------------------------------
+    // 接続
+    //-------------------------------------------------------------------------
+    connect(): Promise<void> {
+        return this.ws.connect();
+    }
+    
+    disconnect(): Promise<void> {
+        return this.ws.disconnect();
+    }
+    
     //-------------------------------------------------------------------------
     // 通知対象のイベントを追加する
     //-------------------------------------------------------------------------

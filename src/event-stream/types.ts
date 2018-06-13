@@ -5,7 +5,10 @@ import { Observable } from 'rxjs';
 //-----------------------------------------------------------------------------
 export interface EventStreamWebsocket {
     message$: Observable<any>;
+    isConnected: boolean;
     send( data: any ): void;
+    connect(): Promise<void>;
+    disconnect(): Promise<void>;
 }
 
 //-----------------------------------------------------------------------------
