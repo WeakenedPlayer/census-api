@@ -1,7 +1,7 @@
 {
 	"scope": "@weakenedplayer",
 	"name": "@weakenedplayer/census-api",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "DBG Census API: REST & Event Stream for browser&node.js",
 	"keywords": [
 		"Census API",

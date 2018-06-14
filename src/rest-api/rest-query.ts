@@ -87,5 +87,6 @@ export class RestQuery {
     case( value: boolean ): RestQuery                    { return this.registerBoolean( 'case', value ) }
     limit( value: number ): RestQuery                    { return this.register( 'limit', String( value ) ) }
     limitPerDB( value: number ): RestQuery               { return this.register( 'limitPerDB', String( value ) ) }
+    start( value: number ): RestQuery                    { return this.register( 'start', String( value ) ) }
 }
 
