@@ -1,7 +1,7 @@
 {
 	"scope": "@weakenedplayer",
 	"name": "@weakenedplayer/census-api",
-	"version": "0.3.2",
+	"version": "0.4.1",
 	"description": "DBG Census API: REST & Event Stream for browser&node.js",
 	"keywords": [
 		"Census API",
@@ -23,7 +23,7 @@
 	"dependencies": {
 		"postinstall-build": "^5.0.1",
 		"request": "^2.87.0",
-		"rxjs": "^6.2.0"
+		"rxjs": "^6.0.0"
 	},
 	"devDependencies": {
   },

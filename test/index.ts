@@ -28,19 +28,22 @@ outfit
 .where( 'outfit_id', t => {
     t.contains( '37512998641471064' );
 } )
-.join( 'character', ( join ) =>{
-    join.on( 'leader_character_id' );
-    join.to( 'character_id' );
-    join.nest( 'faction' );
-    join.nest( 'characters_world', ( join ) => {
-        join.nest( 'world' );
+.join( 'outfit_member', join => {
+    join.list( true );
+    join.where( 'rank_ordinal', t => {
+        t.lessThan( '4' );
     } );
-});
+    join.nest( 'character', join => {
+        join.show( [ 'name.first' ] );
+    } )
+    join.show( [ 'rank', 'character_id' ] );
+} )
 
+// query
 console.log( outfit.toString() );
 
 let api = new Census.RestApi( new nodeHttp() );
 api.get( outfit )
 .then( res => {
-    console.log( res );
+    console.log( JSON.stringify( res ) );
 } );
