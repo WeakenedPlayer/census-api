@@ -1,4 +1,7 @@
+import { JoinTerm } from './terms';
+
 export class RestJoin {
+    private terms: { [ field: string ]: JoinTerm } = {};
     private children: RestJoin[] = [];
     private commands: { [ key: string ]: string } = {};
 
@@ -14,6 +17,14 @@ export class RestJoin {
         for( let key in this.commands ) {
             query = query + '^' + this.commands[ key ];
         }
+        
+        let terms: string[] = [];
+        for( let field in this.terms ) {
+            terms.push( this.terms[ field ].toString() );
+        }
+        if( terms.length > 0 ) {
+            query = query + '^terms:' + terms.join( '\'' );            
+        }
 
         let joins = '';
         for( let child of this.children ) {
@@ -22,6 +33,7 @@ export class RestJoin {
         if( joins ) {
             query = query + '(' + joins + ')';            
         }
+        
         return query;
     }
     
@@ -72,6 +84,13 @@ export class RestJoin {
             configure( join );            
         }
         this.children.push( join );
+        return this;
+    }
+    
+    where( field: string, configure: ( term: JoinTerm ) => void ) {
+        let term = new JoinTerm( field );
+        configure( term );
+        this.terms[ field ] = term;
         return this;
     }
 }

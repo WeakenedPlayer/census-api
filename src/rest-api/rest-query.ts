@@ -1,4 +1,4 @@
-import { RestTerm } from './rest-term';
+import { RestTerm } from './terms';
 import { RestJoin } from './rest-join';
 
 export class RestQuery {
