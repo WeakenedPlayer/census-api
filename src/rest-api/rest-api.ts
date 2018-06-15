@@ -1,5 +1,3 @@
-import { Observable, Subscriber } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { RestQuery } from './rest-query';
 import { RestApiHttp } from './types';
 
@@ -13,22 +11,22 @@ export class RestApi {
         this.baseUrl = BASE_URL + serviceId;
     }
     
-    private request(  method: string, query: RestQuery ): Observable<any[]> {
+    private request(  method: string, query: RestQuery ): Promise<any[]> {
         let url = [ this.baseUrl,  method, this.environment, query.toString() ].join('/');
-        return this.http.get( url ).pipe( map( res => {
+        return this.http.get( url ).then( res => {
             let err: string = res[ 'error' ] || res[ 'errorMessage' ];
             if( err ) {
                 throw new Error( err );
             }
             return res[ query.collection + '_list' ];
-        } ) );
+        } );
     }
     
-    get( query: RestQuery ): Observable<any[]> {
+    get( query: RestQuery ): Promise<any[]> {
         return this.request( 'get', query );
     }
 
-    count( query: RestQuery ): Observable<any[]> {
+    count( query: RestQuery ): Promise<any[]> {
         return this.request( 'count', query );
     }
 }
